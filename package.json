@@ -5,7 +5,8 @@
     "main": "server.js",
     "scripts": {
         "start": "node server",
-        "start:dev": "nodemon server "
+        "start:dev": "nodemon server ",
+        "generate:docs": "apidoc -i routes -o docs"
     },
     "author": "Anusha",
     "license": "MIT",
@@ -16,10 +17,12 @@
         "express-validator": "^6.14.0",
         "gravatar": "^1.8.2",
         "jsonwebtoken": "^8.5.1",
+        "mongodb": "^4.4.1",
         "mongoose": "^5.13.14",
         "request": "^2.88.2"
     },
     "devDependencies": {
+        "apidoc": "^0.50.5",
         "concurrently": "^7.0.0",
         "nodemon": "^2.0.15"
     }

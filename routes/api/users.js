@@ -1,30 +1,38 @@
-const express = require('express')
+const express = require("express")
 const router = express.Router();
-const gravatar = require('gravatar')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const config = require('config')
-    // const { body } = require('express-validator')
-const { check, validationResult } = require('express-validator/check');
-const { JsonWebTokenError } = require('jsonwebtoken');
-const User = require("../../models/User");
-// @route POST api / users
-// @desc Register user
-//@access Public
-router.post('/', [check('name', 'Name is required')
+const gravatar = require("gravatar")
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const config = require("config")
+const { check, validationResult } = require("express-validator")
+
+const { body } = require("express-validator")
+
+const User = require("../../models/User")
+
+
+// @route   post api/users
+// @desc    registerconst gravatar = require("gravatar")
+// const bc user
+// @access  public
+router.post("/", [
+        check("name", "Name is required") //with rout we can listen another routes
         .not()
         .isEmpty(),
-        check('email', 'please include a valid email').isEmail(),
+        check("email", "please include a valid email").isEmail(),
         check(
             "password",
             "please enter a password with 6 or more characters"
         ).isLength({ min: 6, max: 12 }),
-        check('password').custom((password, { req }) => {
-            if (password !== req.body.passwordConfirmation) {
-                throw new Error('Password confirmation is incorrect');
+
+        //    confirmation code
+        check("password").custom((password, { req }) => {
+            if (password !== req.body.passwordconfirmation) {
+                throw new Error("password confirmation is incorrect")
             }
             return true
         }),
+        // email checking
         check("email").custom(async(email, { req }) => {
             let user = await User.findOne({ email })
             if (user) {
@@ -36,49 +44,54 @@ router.post('/', [check('name', 'Name is required')
     ],
     async(req, res) => {
         const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+        }
+
         const { name, email, password } = req.body;
+
         try {
+            // see if user exists
 
+            // get user gravatar
             const avatar = gravatar.url(email, {
-                s: '200',
-                r: 'pg',
-                d: 'mm'
+                s: "200", //size defaultfindOne
+                r: "pg", //rating
+                d: "mm" //default mm(default image like a user icon)
             })
-            user = new User({
-                name,
-                email,
-                avatar,
-                password
-            });
 
-            const salt = await bcrypt.genSalt(10);
+            let user = new User({
+                    name,
+                    email,
+                    avatar,
+                    password
+                })
+                // token
+                // encrypt password by using bcrypt
+            const salt = await bcrypt.genSalt(10); //10 how much we will give that much it is protected
+
             user.password = await bcrypt.hash(password, salt)
+
             await user.save();
+            // return json webtoken
+            // res.send("user registered");
             const payload = {
                 user: {
                     id: user.id
                 }
-            };
+            }
+
             jwt.sign(
                 payload,
-                config.get('jwtSecret'), { expiresIn: 360000 },
+                config.get("jwtSecret"), { expiresIn: 360000 },
                 (err, token) => {
                     if (err) throw err;
                     res.json({ token });
-                });
-
-
-
-
-            // Return jsonwebtoken
-            // res.send('User Registered')
+                })
 
         } catch (err) {
             console.error(err.message);
-            res.status(500).send('server error')
-
+            return res.status(500).send("server error");
         }
-
-    });
-
+    })
 module.exports = router;

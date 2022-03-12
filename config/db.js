@@ -5,11 +5,15 @@ const db = config.get("mongoURI")
 const connectDB = async() => {
     try {
         await mongoose.connect(db, {
-            userNewUrlParser: true,
-            userCreaterIndex: true,
+            useNewUrlParser: true,
+
+
+
+            useCreateIndex: true,
             useUnifiedTopology: true,
-            userNewUrlParser: true,
-            useFindAndModify: true
+            // userNewUrlParser: true,
+            useFindAndModify: true,
+
 
         })
         console.log("mongoDB connected.....")

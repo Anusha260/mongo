@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ProfileSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
+        ref: "user"
     },
     company: {
         type: String
     },
-    wesite: {
+    website: {
         type: String
     },
     location: {
@@ -18,7 +18,7 @@ const ProfileSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    skill: {
+    skills: {
         type: [String],
         required: true
     },
@@ -28,10 +28,12 @@ const ProfileSchema = new mongoose.Schema({
     githubusername: {
         type: String
     },
+
     experience: [{
         title: {
             type: String,
             required: true
+
         },
         company: {
             type: String,
@@ -45,7 +47,7 @@ const ProfileSchema = new mongoose.Schema({
             required: true
         },
         to: {
-            type: Date
+            type: Date,
         },
         current: {
             type: Boolean,
@@ -53,12 +55,13 @@ const ProfileSchema = new mongoose.Schema({
         },
         description: {
             type: String
-        }
+        },
     }],
     education: [{
         school: {
             type: String,
             required: true
+
         },
         degree: {
             type: String,
@@ -66,14 +69,13 @@ const ProfileSchema = new mongoose.Schema({
         },
         fieldofstudy: {
             type: String,
-            required: true
         },
         from: {
             type: Date,
             required: true
         },
         to: {
-            type: Date
+            type: Date,
         },
         current: {
             type: Boolean,
@@ -81,11 +83,12 @@ const ProfileSchema = new mongoose.Schema({
         },
         description: {
             type: String
-        }
+        },
     }],
     social: {
         youtube: {
             type: String
+
         },
         twitter: {
             type: String
@@ -94,7 +97,7 @@ const ProfileSchema = new mongoose.Schema({
             type: String
         },
         linkedin: {
-            type: String
+            type: Date
         },
         instagram: {
             type: String
@@ -105,4 +108,5 @@ const ProfileSchema = new mongoose.Schema({
         default: Date.now
     }
 });
-module.exports = profile = mongoose.model('profile', ProfileSchema)
+
+module.exports = profile = mongoose.model("profile", ProfileSchema)
