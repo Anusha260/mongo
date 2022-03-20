@@ -1,4 +1,5 @@
 const express = require("express")
+
 const router = express.Router();
 const gravatar = require("gravatar")
 const bcrypt = require("bcryptjs")
@@ -6,7 +7,7 @@ const jwt = require("jsonwebtoken")
 const config = require("config")
 const { check, validationResult } = require("express-validator")
 
-const { body } = require("express-validator")
+// const { body } = require("express-validator")
 
 const User = require("../../models/User")
 
@@ -16,7 +17,7 @@ const User = require("../../models/User")
 // const bc user
 // @access  public
 router.post("/", [
-        check("name", "Name is required") //with rout we can listen another routes
+        check("name", "Name is required") // with rout we can listen another routes
         .not()
         .isEmpty(),
         check("email", "please include a valid email").isEmail(),
@@ -33,8 +34,8 @@ router.post("/", [
             return true
         }),
         // email checking
-        check("email").custom(async(email, { req }) => {
-            let user = await User.findOne({ email })
+        check("email").custom(async(email) => {
+            const user = await User.findOne({ email })
             if (user) {
                 throw new Error("email is already exist")
             }
@@ -45,7 +46,8 @@ router.post("/", [
     async(req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
+            res.status(400).json({ errors: errors.array() })
+            return;
         }
 
         const { name, email, password } = req.body;
@@ -55,12 +57,12 @@ router.post("/", [
 
             // get user gravatar
             const avatar = gravatar.url(email, {
-                s: "200", //size defaultfindOne
-                r: "pg", //rating
-                d: "mm" //default mm(default image like a user icon)
+                s: "200", // size defaultfindOne
+                r: "pg", // rating
+                d: "mm" // default mm(default image like a user icon)
             })
 
-            let user = new User({
+            const user = new User({
                     name,
                     email,
                     avatar,
@@ -68,7 +70,7 @@ router.post("/", [
                 })
                 // token
                 // encrypt password by using bcrypt
-            const salt = await bcrypt.genSalt(10); //10 how much we will give that much it is protected
+            const salt = await bcrypt.genSalt(10); // 10 how much we will give that much it is protected
 
             user.password = await bcrypt.hash(password, salt)
 
@@ -90,8 +92,10 @@ router.post("/", [
                 })
 
         } catch (err) {
-            console.error(err.message);
-            return res.status(500).send("server error");
+            console(err.message);
+            res.status(500).send("server error");
+
+
         }
     })
 module.exports = router;

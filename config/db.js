@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const config = require("config")
+
 const db = config.get("mongoURI")
 
 const connectDB = async() => {
@@ -15,11 +16,12 @@ const connectDB = async() => {
             useFindAndModify: true,
 
 
-        })
-        console.log("mongoDB connected.....")
+        });
+        // console.log("mongoDB connected.....")
+
     } catch (err) {
-        console.error(err.message)
-            //exit process with failure
+        // console.error(err.message)
+        // exit process with failure
         process.exit(1)
     }
 }
